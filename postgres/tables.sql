@@ -3,17 +3,18 @@ CREATE TABLE stock
 (
 	symbol character varying(20) NOT NULL PRIMARY KEY,
 	price numeric NOT NULL,
-	last_update timestamp with time zone NOT NULL DEFAULT now(),
+	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
-INSERT INTO stock (symbol, price)
-	VALUES ('ORCL', '41.06');
+--INSERT INTO stock (symbol, price)
+	--VALUES ('ORCL', '41.06');
 
 -- Company
 -- one company can have multiple stock symbols, not 1:1?
 CREATE TABLE company 
 (
 	company_id serial PRIMARY KEY,
+	symbol character varying(20) REFERENCES stock (symbol),
 	name character varying(50) NOT NULL,
 	image character varying(100) NOT NULL,
 	year_founded numeric(4,0) NOT NULL,
