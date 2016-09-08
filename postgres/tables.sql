@@ -37,5 +37,5 @@ CREATE TABLE company_address
 	company_id integer NOT NULL REFERENCES company (company_id),
 	address_id integer NOT NULL REFERENCES address (address_id),
 	last_update timestamp with time zone NOT NULL DEFAULT now(),
-	CONSTRAINT company_address_pkey PRIMARY KEY (company_address_id, company_id, address_id)
+	CONSTRAINT company_address_pkey PRIMARY KEY (company_address_id, company_id, address_id) -- composite key
 );
