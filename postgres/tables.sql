@@ -14,19 +14,19 @@ CREATE TABLE stock
 CREATE TABLE company 
 (
 	company_id serial PRIMARY KEY,
-	symbol character varying(20) REFERENCES stock (symbol),
+	symbol character varying(20) NOT NULL, -- fk stock(symbol)
 	name character varying(50) NOT NULL,
 	image character varying(100) NOT NULL,
-	year_founded numeric(4,0) NOT NULL,
+	year_found numeric(4,0) NOT NULL,
 	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
 -- Address
 CREATE TABLE address
 (
-	address_id integer PRIMARY KEY,
-	city character varying(100) NOT NULL,
-	country character varying(100) NOT NULL, -- we can make this country_id and make a country table?
+	address_id serial PRIMARY KEY,
+	city_id integer NOT NULL, -- fk city(city_id)
+	country_id integer NOT NULL, -- fk country(country_id)
 	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
@@ -34,8 +34,45 @@ CREATE TABLE address
 CREATE TABLE company_address
 (
 	company_address_id serial,
-	company_id integer NOT NULL REFERENCES company (company_id),
-	address_id integer NOT NULL REFERENCES address (address_id),
-	last_update timestamp with time zone NOT NULL DEFAULT now(),
-	CONSTRAINT company_address_pkey PRIMARY KEY (company_address_id, company_id, address_id) -- composite key
+	company_id integer NOT NULL, -- fk company(company_id)
+	address_id integer NOT NULL, -- fk address(address_id)
+	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
+
+-- City
+CREATE TABLE city
+(
+	city_id serial PRIMARY KEY,
+	country_id integer NOT NULL, -- fk country(country_id)
+	city character varying(100) NOT NULL,
+	last_update timestamp with time zone NOT NULL DEFAULT now()
+);
+
+-- Country
+CREATE TABLE country
+(
+	country_id serial PRIMARY KEY,
+	country character varying(100) NOT NULL,
+	last_update timestamp with time zone NOT NULL DEFAULT now()
+);
+
+-- Alter tables to add Foreign Keys
+
+-- company alter
+ALTER TABLE company
+ADD FOREIGN KEY (symbol) REFERENCES stock(symbol);
+
+-- address alter
+ALTER TABLE address
+ADD FOREIGN KEY (city_id) REFERENCES city(city_id),
+ADD FOREIGN KEY (country_id) REFERENCES country (country_id);
+
+-- Company Address alter
+ALTER TABLE company_address
+ADD CONSTRAINT company_address_pkey PRIMARY KEY (company_address_id, company_id, address_id), -- composite key
+ADD FOREIGN KEY (company_id) REFERENCES company (company_id),
+ADD FOREIGN KEY (address_id) REFERENCES address (address_id);
+
+-- city alter
+ALTER TABLE city
+ADD FOREIGN KEY (country_id) REFERENCES country (country_id);
