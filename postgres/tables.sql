@@ -123,6 +123,16 @@ INSERT INTO address (city_id, country_id)
 INSERT INTO company_address (company_id,  address_id)
     VALUES (1, 1);
 
+-- News
+INSERT INTO news (article, description)
+    VALUES ('https://goo.gl/PxV6Wd', 'Hedge Fund Manager Who Spotted Fraud at Enron Calls Tesla "The Anti-Amazon"');
+
+-- Company_News
+INSERT INTO company_news (company_id, news_id)
+    VALUES (1, 1);
+
+
+
 
 
 
