@@ -1,3 +1,12 @@
+-- Overall Pretty Good
+-- Please try to use foreign keys inside create table instead of using alter when possible
+-- reorder your table creation such that you can add foreign keys/ primary keys into your table directly
+-- you mainly only start altering table when there are schema/requirement changes segmented by version releases
+-- after multiple releases of a piece of sofware you want to keep a specific alteration
+-- For example version 1.0 we didn't have a linke between stock and company table
+-- but in versino 2.0 we wanted the relationship between stock and company table to be present
+-- after you do all the fixes please delete my comments - there are more comments below
+
 -- Stocks 
 CREATE TABLE stock
 (
@@ -7,7 +16,26 @@ CREATE TABLE stock
 );
 
 -- Company
--- one company can have multiple stock symbols, not 1:1?
+-- make sure all your primary keys are not null too
+-- one company can have multiple stock symbols, not 1:1? great, because of googl goog
+-- however, for many to one, you generally want the many refer to the one 
+-- I guess it may be easier to think that multiple stocks belong to 1 company
+-- please think about this carefully and let me know if you have any questions
+
+-- Many stocks One Company
+-- If you have 1 company referencing multiple stocks, wuoldn't this create duplicate rows?
+-- Let me know why?
+-- If you have multiple stocks referencing 1 company, wouldn't this work better
+-- Let me know why?
+-- let me know what you think
+
+
+-- in this case - many is stock and one is company
+-- please create foreign keys by using reference
+-- As a beginner - please just use INT instead of serial - it will be easier to use
+-- serial is nice security-wise/ identification wise but for debugging it's a pain to enter whole 
+-- serials to check whether you inserted data correctly
+-- Ex: company_id integer references company(company_id)
 CREATE TABLE company 
 (
 	company_id serial PRIMARY KEY,
@@ -27,7 +55,11 @@ CREATE TABLE address
 	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
--- Company Address
+-- Company Address - create composite key on postgresql Primary Key (company_id, address_id) at the bottom - don't use
+-- alter table
+-- After you insert some test data try to do a address loook up of company grouped by
+-- generate more test data for practice -> get all microsoft, amazon, google offices in california and insert into table
+-- query the database and group by company
 CREATE TABLE company_address
 (
 	company_address_id serial,
@@ -37,6 +69,7 @@ CREATE TABLE company_address
 );
 
 -- City
+-- why are we splitting up city country etc again? why can't we include them in address
 CREATE TABLE city
 (
 	city_id serial PRIMARY KEY,
@@ -53,7 +86,7 @@ CREATE TABLE country
 	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
--- Company_News
+-- Company_News - create composite key on postgresql Primary Key (company_id, news_id) at the bottom
 CREATE TABLE company_news
 (
 	company_news_id serial,
@@ -72,7 +105,8 @@ CREATE TABLE news
 );
 
 -- Alter tables to add Foreign Keys
-
+-- please don't alter table foreign key - please try to do it on table creation
+-- this lets my know the constraints clearly but it would be much more concise to put it into your table creations
 -- company alter
 ALTER TABLE company
 ADD FOREIGN KEY (symbol) REFERENCES stock(symbol);
