@@ -99,8 +99,29 @@ ADD FOREIGN KEY (company_id) REFERENCES company (company_id),
 ADD FOREIGN KEY (news_id) REFERENCES news (news_id);
 
 -- INSERTS
+-- Stock
 INSERT INTO stock (symbol, price)
-	VALUES ('ORCL', '41.06');
+	VALUES ('TSLA', '196.05');
+
+-- Company
+INSERT INTO company (symbol, name, image, year_found)
+	VALUES ('TSLA', 'Tesla', 'goo.gl/JH8FT4', 2003);
+
+-- Country
+INSERT INTO country (country)
+    VALUES ('USA');
+
+-- City
+INSERT INTO city (country_id, city)
+    VALUES (1, 'San Carlos');
+
+-- Address
+INSERT INTO address (city_id, country_id)
+    VALUES (1, 1);
+
+-- Company_Address
+INSERT INTO company_address (company_id,  address_id)
+    VALUES (1, 1);
 
 
 
@@ -122,4 +143,3 @@ INSERT INTO stock (symbol, price)
 
 
 
-	
