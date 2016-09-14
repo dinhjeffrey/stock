@@ -6,9 +6,6 @@ CREATE TABLE stock
 	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
---INSERT INTO stock (symbol, price)
-	--VALUES ('ORCL', '41.06');
-
 -- Company
 -- one company can have multiple stock symbols, not 1:1?
 CREATE TABLE company 
@@ -100,3 +97,29 @@ ALTER TABLE company_news
 ADD CONSTRAINT company_news_pkey PRIMARY KEY (company_news_id, company_id, news_id), -- composite key
 ADD FOREIGN KEY (company_id) REFERENCES company (company_id),
 ADD FOREIGN KEY (news_id) REFERENCES news (news_id);
+
+-- INSERTS
+INSERT INTO stock (symbol, price)
+	VALUES ('ORCL', '41.06');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
