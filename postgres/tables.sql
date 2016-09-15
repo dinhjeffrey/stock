@@ -70,6 +70,7 @@ CREATE TABLE company_address
 
 -- City
 -- why are we splitting up city country etc again? why can't we include them in address
+-- j: There may be repeated countries and cities, which we can move to their own table right? 
 CREATE TABLE city
 (
 	city_id serial PRIMARY KEY,
