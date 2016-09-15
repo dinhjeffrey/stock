@@ -7,14 +7,6 @@
 -- but in versino 2.0 we wanted the relationship between stock and company table to be present
 -- after you do all the fixes please delete my comments - there are more comments below
 
--- Stocks 
-CREATE TABLE stock
-(
-	symbol character varying(20) NOT NULL PRIMARY KEY,
-	price numeric NOT NULL,
-	last_update timestamp with time zone NOT NULL DEFAULT now()
-);
-
 -- Company
 -- make sure all your primary keys are not null too
 -- one company can have multiple stock symbols, not 1:1? great, because of googl goog
@@ -30,22 +22,25 @@ CREATE TABLE stock
 -- If you have multiple stocks referencing 1 company, wouldn't this work better
 -- Let me know why?
 -- let me know what you think
+-- j: yeah I agree it would be better for multiple stocks to reference 1 company. Therefore we wouldn't need 'symbol' in the company table right? We don't want 'symbol' because it depends on the stock table
 
-
--- in this case - many is stock and one is company
--- please create foreign keys by using reference
--- As a beginner - please just use INT instead of serial - it will be easier to use
--- serial is nice security-wise/ identification wise but for debugging it's a pain to enter whole 
--- serials to check whether you inserted data correctly
--- Ex: company_id integer references company(company_id)
 CREATE TABLE company 
 (
-	company_id serial PRIMARY KEY,
-	symbol character varying(20) NOT NULL, -- fk stock(symbol)
+	company_id integer PRIMARY KEY NOT NULL,
 	name character varying(50) NOT NULL,
 	image character varying(100) NOT NULL,
 	year_found numeric(4,0) NOT NULL,
 	last_update timestamp with time zone NOT NULL DEFAULT now()
+);
+
+-- Stocks 
+CREATE TABLE stock
+(
+	symbol character varying(20) NOT NULL PRIMARY KEY,
+	company_id integer not null,
+	price numeric NOT NULL,
+	last_update timestamp with time zone NOT NULL DEFAULT now(),
+	foreign key (company_id) references company (company_id)
 );
 
 -- Address
