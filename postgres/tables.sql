@@ -21,6 +21,8 @@ CREATE TABLE stock
 -- however, for many to one, you generally want the many refer to the one 
 -- I guess it may be easier to think that multiple stocks belong to 1 company
 -- please think about this carefully and let me know if you have any questions
+-- j: but goog(alphabet) is a separate company from google(googl) right? they have have different company name, image, year found, etc
+-- j: but perhaps we should just keep it simple and make it as one company
 
 -- Many stocks One Company
 -- If you have 1 company referencing multiple stocks, wuoldn't this create duplicate rows?
