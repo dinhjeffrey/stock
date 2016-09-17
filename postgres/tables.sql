@@ -29,6 +29,16 @@ CREATE TABLE country
 -- why are we splitting up city country etc again? why can't we include them in address
 -- j: There may be duplicate countries and cities, which we can move to their own table right?
 -- j: nvm, i deleted city_id from address table. does it make sense the way it is now?
+-- c: we can just have city & country as character in the address table - so the tradeoff here is
+-- every time you query address you have to do a join in order to get city and country, don't you think it's
+-- a little too much work to grab address? 
+-- However, if you really want to do this please use lookup table instead
+-- The reason behind lookup table is so that you can ensure spelling is consistent for countries & stuff are consistent
+-- preload all the countries with codes and stuff
+-- btw, you can't avoid duplicate countries cities even if you add a link haha :) - companies can be located in the same
+-- city and country etc. -> in the end you will be having duplicate city ids XD - think about it a little more
+-- let me know if I am right or wrong
+
 CREATE TABLE city
 (
 	city_id integer not null PRIMARY KEY,
