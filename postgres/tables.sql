@@ -17,18 +17,6 @@ CREATE TABLE stock
 	foreign key (company_id) references company (company_id)
 );
 
--- Country
-CREATE TABLE country
-(
-	country_id integer not null PRIMARY KEY,
-	country character varying(250) NOT NULL,
-	last_update timestamp with time zone NOT NULL DEFAULT now()
-);
-
--- City
--- why are we splitting up city country etc again? why can't we include them in address
--- j: There may be duplicate countries and cities, which we can move to their own table right?
--- j: nvm, i deleted city_id from address table. does it make sense the way it is now?
 -- c: we can just have city & country as character in the address table - so the tradeoff here is
 -- every time you query address you have to do a join in order to get city and country, don't you think it's
 -- a little too much work to grab address? 
@@ -38,23 +26,22 @@ CREATE TABLE country
 -- btw, you can't avoid duplicate countries cities even if you add a link haha :) - companies can be located in the same
 -- city and country etc. -> in the end you will be having duplicate city ids XD - think about it a little more
 -- let me know if I am right or wrong
-
-CREATE TABLE city
-(
-	city_id integer not null PRIMARY KEY,
-	country_id integer NOT NULL,
-	city character varying(250) NOT NULL,
-	last_update timestamp with time zone NOT NULL DEFAULT now(),
-	foreign key (country_id) references country (country_id)
-);
+-- j: From what I searched online, a lookup table replaces a column in the main table into it's own table right?
+-- When I linked the country and city table via country_id, city_id, wouldn't it be a lookup table?  
+-- but yeah I agree it is more work using multiple joins to just get the address
+-- I have changed the address table, lemme know what you think. I also added phone number because I notice addresses included phone number too
 
 -- Address
 CREATE TABLE address
 (
 	address_id integer not null PRIMARY KEY,
-	city_id integer not null,
-	last_update timestamp with time zone NOT NULL DEFAULT now(),
-	FOREIGN KEY (city_id) REFERENCES city (city_id)
+	street character varying(500) not null,
+	city character varying(250) not null,
+	state character varying(250) not null,
+	zip integer not null,
+	country character varying(250) not null,
+	phone_number integer not null,
+	last_update timestamp with time zone NOT NULL DEFAULT now()
 );
 
 CREATE TABLE company_address
@@ -88,14 +75,54 @@ CREATE TABLE company_news
 );
 
 
-
 -- After you insert some test data try to do a address loook up of company grouped by
 -- generate more test data for practice -> get all microsoft, amazon, google offices in california and insert into table
 -- query the database and group by company
 
+-- Microsoft
+/*
+Address:
+3 Park Plaza, Suite 1600 
+Irvine, CA 92614 
+Phone:(949) 263-3000 
+Fax:(949) 252-8618
 
+Address:
+13031 West Jefferson Boulevard, Suite 200 
+Los Angeles, CA 90094 
+Phone:(213) 806-7300
 
+Address:
+9255 Towne Centre Dr., Suite 400 
+San Diego, CA 92121 
+Phone:(858) 909-3800 
+Fax:(858) 909-3838
 
+*/
+
+-- Google
+/*
+Google Inc.
+1600 Amphitheatre Parkway
+Mountain View, CA 94043
+Phone: +1 650-253-0000
+
+Google Orange County
+19510 Jamboree Road
+Suite 300
+Irvine, CA 92612
+Phone: +1 949-794-1600
+
+Google Los Angeles
+340 Main Street
+Los Angeles, CA 90291
+Phone: +1 310-310-6000
+
+Google San Francisco
+345 Spear Street
+San Francisco, CA 94105
+Phone: +1 415-736-0000
+*/
 
 -- INSERTS
 -- Stock
