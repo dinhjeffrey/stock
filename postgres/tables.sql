@@ -1,3 +1,5 @@
+-- c: let me know if you can also create triggers for timestamps
+-- c: http://www.the-art-of-web.com/sql/trigger-update-timestamp/
 CREATE TABLE company
 (
 	company_id integer PRIMARY KEY NOT NULL,
@@ -17,20 +19,15 @@ CREATE TABLE stock
 	foreign key (company_id) references company (company_id)
 );
 
--- c: we can just have city & country as character in the address table - so the tradeoff here is
--- every time you query address you have to do a join in order to get city and country, don't you think it's
--- a little too much work to grab address? 
--- However, if you really want to do this please use lookup table instead
--- The reason behind lookup table is so that you can ensure spelling is consistent for countries & stuff are consistent
--- preload all the countries with codes and stuff
--- btw, you can't avoid duplicate countries cities even if you add a link haha :) - companies can be located in the same
--- city and country etc. -> in the end you will be having duplicate city ids XD - think about it a little more
--- let me know if I am right or wrong
--- j: From what I searched online, a lookup table replaces a column in the main table into it's own table right?
--- When I linked the country and city table via country_id, city_id, wouldn't it be a lookup table?  
--- but yeah I agree it is more work using multiple joins to just get the address
--- I have changed the address table, lemme know what you think. I also added phone number because I notice addresses included phone number too
-
+-- c: your city, first of all, contains a foreign key to country - already technically disqualifies it as a lookup
+-- c: so your lookup 2 commits ago was actually more correct (just remove the foreign key dependency)
+-- c: also, technically there can be two cities with the same name in 2 different countries so your
+-- c: design there is faulty anyway
+-- c: the whole point of lookup is to reduce the number of updates you have to do when you change the name of 
+-- c: a city or add a new city formed to your table (let's say ww3 happened and territories got renamed lol)
+-- c: since we're not gonna have huge number of tables referencing city and country - I think it would be more
+-- c: convenient to just put it in address
+-- c: you can delete all my comments now
 -- Address
 CREATE TABLE address
 (
