@@ -1,5 +1,6 @@
 -- c: let me know if you can also create triggers for timestamps
 -- c: http://www.the-art-of-web.com/sql/trigger-update-timestamp/
+-- j: added triggers, let me know what you think
 CREATE TABLE company
 (
 	company_id integer PRIMARY KEY NOT NULL,
@@ -19,15 +20,6 @@ CREATE TABLE stock
 	foreign key (company_id) references company (company_id)
 );
 
--- c: your city, first of all, contains a foreign key to country - already technically disqualifies it as a lookup
--- c: so your lookup 2 commits ago was actually more correct (just remove the foreign key dependency)
--- c: also, technically there can be two cities with the same name in 2 different countries so your
--- c: design there is faulty anyway
--- c: the whole point of lookup is to reduce the number of updates you have to do when you change the name of 
--- c: a city or add a new city formed to your table (let's say ww3 happened and territories got renamed lol)
--- c: since we're not gonna have huge number of tables referencing city and country - I think it would be more
--- c: convenient to just put it in address
--- c: you can delete all my comments now
 -- Address
 CREATE TABLE address
 (
@@ -79,20 +71,20 @@ CREATE TABLE company_news
 -- Microsoft
 /*
 Address:
-3 Park Plaza, Suite 1600 
-Irvine, CA 92614 
-Phone:(949) 263-3000 
+3 Park Plaza, Suite 1600
+Irvine, CA 92614
+Phone:(949) 263-3000
 Fax:(949) 252-8618
 
 Address:
-13031 West Jefferson Boulevard, Suite 200 
-Los Angeles, CA 90094 
+13031 West Jefferson Boulevard, Suite 200
+Los Angeles, CA 90094
 Phone:(213) 806-7300
 
 Address:
-9255 Towne Centre Dr., Suite 400 
-San Diego, CA 92121 
-Phone:(858) 909-3800 
+9255 Towne Centre Dr., Suite 400
+San Diego, CA 92121
+Phone:(858) 909-3800
 Fax:(858) 909-3838
 
 */
@@ -121,38 +113,76 @@ San Francisco, CA 94105
 Phone: +1 415-736-0000
 */
 
--- INSERTS
--- Stock
-INSERT INTO stock (symbol, price)
-	VALUES ('TSLA', '196.05');
+select * from company;
 
+-- INSERTS
 -- Company
-INSERT INTO company (symbol, name, image, year_found)
-	VALUES ('TSLA', 'Tesla', 'goo.gl/JH8FT4', 2003);
+INSERT INTO company (company_id, name, image, year_found)
+	VALUES (1, 'Tesla', 'goo.gl/JH8FT4', 2003);
+
+update company set year_found = 2000 where year_found = 2003;
+
+update company set year_found = 2020 where year_found = 2000;
+
+
+-- Stock
+-- INSERT INTO stock (symbol, price)
+-- 	VALUES ('TSLA', '196.05');
 
 -- Country
-INSERT INTO country (country)
-    VALUES ('USA');
+-- INSERT INTO country (country)
+--     VALUES ('USA');
 
 -- City
-INSERT INTO city (country_id, city)
-    VALUES (1, 'San Carlos');
+-- INSERT INTO city (country_id, city)
+--     VALUES (1, 'San Carlos');
 
 -- Address
-INSERT INTO address (city_id, country_id)
-    VALUES (1, 1);
+-- INSERT INTO address (city_id, country_id)
+--     VALUES (1, 1);
 
 -- Company_Address
-INSERT INTO company_address (company_id,  address_id)
-    VALUES (1, 1);
+-- INSERT INTO company_address (company_id,  address_id)
+--     VALUES (1, 1);
 
 -- News
-INSERT INTO news (article, description)
-    VALUES ('https://goo.gl/PxV6Wd', 'Hedge Fund Manager Who Spotted Fraud at Enron Calls Tesla "The Anti-Amazon"');
+-- INSERT INTO news (article, description)
+--     VALUES ('https://goo.gl/PxV6Wd', 'Hedge Fund Manager Who Spotted Fraud at Enron Calls Tesla "The Anti-Amazon"');
 
 -- Company_News
-INSERT INTO company_news (company_id, news_id)
-    VALUES (1, 1);
+-- INSERT INTO company_news (company_id, news_id)
+--     VALUES (1, 1);
+
+-- TRIGGERS
+-- grabs all tables from current schema
+select p.tablename
+from pg_tables p
+where p.schemaname='public';
+
+-- trigger function
+create function update_time() returns TRIGGER
+	language plpgsql
+	as $$
+begin
+	new.last_update := current_timestamp;
+	return new;
+	end;
+	$$;
+
+-- create the trigger on tables:
+-- stock
+-- address
+-- company
+-- company_address
+-- news
+-- company_news
+
+create trigger trigger_last_update
+	before update on company -- rotate each table
+	for each row execute procedure update_time();
+
+
+
 
 
 
